@@ -9,6 +9,10 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_rocket', 'assets/assets_rocket_shot.wav');
     }
     create() {
+      if(game.highScore === undefined){
+        game.highScore = 0;
+      }
+      game.twoplayer = false;
         let menuConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -23,12 +27,15 @@ class Menu extends Phaser.Scene {
         }
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding,'ROCKET PATROL', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2,'Use <- -> arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + game.config.height/2.2,'Highscore:'+ game.highScore, menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding,'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding + game.config.height/4,'Press F for 2 player!', menuConfig).setOrigin(0.5);
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
     }
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
@@ -46,6 +53,18 @@ class Menu extends Phaser.Scene {
             spaceshipSpeed: 4,
             gameTimer: 45000    
           }
+          this.sound.play('sfx_select');
+          this.scene.start('playScene');    
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyF)) {
+          // hard mode
+          game.settings = {
+            spaceshipSpeed: 4,
+            gameTimer: 45000    
+          }
+          game.twoplayer = true;
+          game.playerone = true;
+          game.scoreplayerone = 0;
           this.sound.play('sfx_select');
           this.scene.start('playScene');    
         }
